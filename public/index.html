@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: white;
+      border-radius: 16px;
+      padding: 48px;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+    .logo {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: 28px;
+      color: #1a1a2e;
+      margin-bottom: 12px;
+    }
+    p {
+      color: #555;
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 14px 36px;
+      font-size: 16px;
+      border-radius: 30px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102,126,234,0.4);
+    }
+    .privacy-notice {
+      margin-top: 32px;
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #777;
+      border: 1px solid #eee;
+    }
+    .privacy-notice a {
+      color: #667eea;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 24px 0;
+      text-align: left;
+    }
+    .feature {
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 10px;
+    }
+    .feature-icon { font-size: 24px; margin-bottom: 8px; }
+    .feature h3 { font-size: 14px; color: #333; margin-bottom: 4px; }
+    .feature p { font-size: 13px; color: #666; margin-bottom: 0; }
+
+    @media (max-width: 500px) {
+      .features { grid-template-columns: 1fr; }
+      .container { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">🔗</div>
+    <h1>Welcome!</h1>
+    <p>Thanks for visiting. You've been redirected here from a shared link.</p>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">⚡</div>
+        <h3>Fast & Secure</h3>
+        <p>Optimized link sharing</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🌍</div>
+        <h3>Global Access</h3>
+        <p>Works everywhere</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📊</div>
+        <h3>Analytics</h3>
+        <p>Track link performance</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔒</div>
+        <h3>Privacy First</h3>
+        <p>Transparent data use</p>
+      </div>
+    </div>
+
+    <a href="https://www.google.com" class="btn" id="continueBtn">Continue →</a>
+
+    <div class="privacy-notice">
+      🔒 <strong>Privacy Notice:</strong> This page collects anonymous analytics data including 
+      approximate location, browser type, and device information to improve our services. 
+      By visiting this page, you acknowledge our data collection practices.
+    </div>
+  </div>
+
+  <script>
+    // --- Collect client-side data ---
+    async function collectAndSend() {
+      const data = {
+        screenWidth: screen.width,
+        screenHeight: screen.height,
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+        colorDepth: screen.colorDepth,
+        pixelRatio: window.devicePixelRatio,
+        language: navigator.language,
+        languages: navigator.languages ? navigator.languages.join(', ') : navigator.language,
+        platform: navigator.platform || navigator.userAgentData?.platform || 'Unknown',
+        referrer: document.referrer || 'Direct',
+        pageUrl: window.location.href,
+        connectionType: navigator.connection?.effectiveType || 'Unknown',
+        doNotTrack: navigator.doNotTrack || 'unspecified',
+        cookieEnabled: navigator.cookieEnabled,
+        touchSupport: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+        maxTouchPoints: navigator.maxTouchPoints || 0,
+        hardwareConcurrency: navigator.hardwareConcurrency || null,
+        deviceMemory: navigator.deviceMemory || null,
+      };
+
+      // Try to get battery info
+      try {
+        if (navigator.getBattery) {
+          const battery = await navigator.getBattery();
+          data.batteryLevel = battery.level;
+          data.batteryCharging = battery.charging;
+        }
+      } catch (e) {}
+
+      // Send to server
+      try {
+        await fetch('/api/track', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+      } catch (e) {
+        console.error('Tracking error:', e);
+      }
+    }
+
+    // Run on page load
+    collectAndSend();
+  </script>
+</body>
+</html>
+
