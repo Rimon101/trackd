@@ -8,8 +8,8 @@ const app = express();
 const PORT = 3000;
 
 // --- Admin credentials (change these!) ---
-const ADMIN_USER = 'admin';
-const ADMIN_PASS = 'changeme123';
+const ADMIN_USER = 'Rimon';
+const ADMIN_PASS = 'Lol222';
 
 // --- Database setup ---
 const db = new Database(path.join(__dirname, 'visitors.db'));
